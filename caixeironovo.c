@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 
-int *vet, **m, max, *valores;
+int *vet, **m, max;
 FILE *fp;
 
 /* struct que vai conter o id da thread e o numero da cidade que a thread vai usar*/
@@ -55,16 +55,6 @@ void visitados(int v[]){
     }
 }
 
-/* adiciona os numeros das cidades em um vetor para ser passado para uma thread*/
-void *t_valores(void *arg){
-    int i;
-    for ( i = 0; i < max; i++)
-    {
-        valores[i] = i;
-        /* printf("valores\n");*/
-    }
-    return NULL;
-}
 
 /* thread que lê a matriz do arquico tsp*/
 void *t_matriz(void *arg){
@@ -162,7 +152,6 @@ int main(int argc, char const *argv[])
     m = malloc(max * sizeof (int*));
     arg = malloc(max * sizeof (argumentos));
     vet = malloc(max * sizeof (int*));
-    valores = malloc(max * sizeof (int*));
     pthread_t *funcao = (pthread_t *) malloc(num * sizeof(pthread_t));
 
     for ( i = 0; i < max; i++)
@@ -173,8 +162,7 @@ int main(int argc, char const *argv[])
     /*recolhe as informações da matriz do arquivo tsp*/
     pthread_create(&thread[0], NULL, t_matriz, NULL);
 
-    /*preenche um vetor com os numeros das cidades para que possam ser passadas para a thread t_caixeiro*/
-    pthread_create(&thread[1], NULL, t_valores, NULL);
+
 
     printf("threads criadas\n");
 
@@ -240,7 +228,6 @@ int main(int argc, char const *argv[])
     free(m);
     free(vet);
     free(arg);
-    free(valores);
 
     return 0;
 }
